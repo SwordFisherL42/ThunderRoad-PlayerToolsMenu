@@ -1,10 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using ThunderRoad;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.XR;
 using static UnityEngine.Debug;
 
 namespace PlayerToolsMenu
@@ -18,12 +16,9 @@ namespace PlayerToolsMenu
         private Vector3 cachedRotation;
         private GameObject spawnedObject;
         private AsyncOperationHandle<GameObject> menuAsset;
-        private List<InputDevice> targetDevices;
-        private readonly InputDeviceCharacteristics controllerFilter = InputDeviceCharacteristics.HeldInHand | InputDeviceCharacteristics.Controller;
 
         public override IEnumerator OnLoadCoroutine()
         {
-            Log("[PlayerToolsMenu][OnLoadCoroutine] Level Loading...");
             Player.onSpawn += new Player.SpawnEvent(PlayerSpawn);
             menuAsset = Addressables.LoadAssetAsync<GameObject>(prefabAddress);
             menuAsset.Completed += handle =>
@@ -40,7 +35,6 @@ namespace PlayerToolsMenu
                     Addressables.Release(handle);
                 }
             };
-            Log("[PlayerToolsMenu][OnLoadCoroutine] Level Loaded");
             yield return null;
         }
 
@@ -74,22 +68,17 @@ namespace PlayerToolsMenu
 
         void PlayerSpawn(Player player)
         {
-            Log($"[PlayerToolsMenu][Player.SpawnEvent] Player Spawning...");
             menuActive = false;
-            targetDevices = new List<InputDevice>();
-            InputDevices.GetDevicesWithCharacteristics(controllerFilter, targetDevices);
             if (spawnedObject == null && menuAsset.Status == AsyncOperationStatus.Succeeded)
             {
                 Log($"[PlayerToolsMenu][Player.SpawnEvent] Instantiating player menu...");
                 InstantiateLoadedAsset(menuAsset, visible: false);
             }
-            Log($"[PlayerToolsMenu][Player.SpawnEvent] Player Spawned");
         }
 
         void ToggleMenuVisible(ref bool state)
         {
-            if (spawnedObject == null) { LogWarning($"[PlayerToolsMenu][ToggleMenuVisible][warning] menu is null"); return; }
-            else if (Player.currentCreature == null || Player.currentCreature.ragdoll == null) { LogWarning($"[PlayerToolsMenu][ToggleMenuVisible][warning] player ragdoll is null"); return; }
+            if (spawnedObject == null || Player.currentCreature == null || Player.currentCreature.ragdoll == null) return;
             state = !state;
             spawnedObject.SetActive(state);
         }

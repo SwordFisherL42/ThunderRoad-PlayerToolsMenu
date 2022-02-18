@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Infinite Sword")]
 [assembly: AssemblyProduct("PlayerToolsMenu")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCopyright("SwordFisherL42")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
